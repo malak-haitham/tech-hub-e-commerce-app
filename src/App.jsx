@@ -11,6 +11,8 @@ import Cart from './components/Cart';
 import Checkout from './components/Checkout';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
+import ProductDetails from './components/ProductDetails';
+
 
 const AppContent = () => {
   const { darkMode } = useTheme();
@@ -19,25 +21,25 @@ const AppContent = () => {
     palette: {
       mode: darkMode ? 'dark' : 'light',
       primary: {
-        main: '#CCDC28',
-        contrastText: '#000000',
+        main: '#565656ff',
+        contrastText: '#575953ff',
       },
       secondary: {
-        main: darkMode ? '#CCDC28' : '#1976d2',
+        main: darkMode ? '#6d4d69ff' : '#00412E',
       },
       background: {
-        default: darkMode ? '#121212' : '#ffffff',
-        paper: darkMode ? '#1e1e1e' : '#ffffff',
+        default: darkMode ? '#3A2C39' : '#E8EAE5',
+        paper: darkMode ? '#6d4d69ff' : '#96BF8A',
       },
     },
     components: {
       MuiButton: {
         styleOverrides: {
           contained: {
-            backgroundColor: '#CCDC28',
+            backgroundColor: '#ffffff5d',
             color: '#000000',
             '&:hover': {
-              backgroundColor: '#b8c424',
+              backgroundColor: '#ffffffe3',
             },
           },
         },
@@ -45,8 +47,8 @@ const AppContent = () => {
       MuiAppBar: {
         styleOverrides: {
           root: {
-            backgroundColor: darkMode ? '#1e1e1e' : '#CCDC28',
-            color: darkMode ? '#ffffff' : '#000000',
+            backgroundColor: darkMode ? '#5a4758ff' : '#96BF8A',
+            color: darkMode ? '#b3b0b3ff' : '#00412E',
           },
         },
       },
@@ -55,13 +57,14 @@ const AppContent = () => {
 
   return (
     <MUIThemeProvider theme={theme}>
-      <CssBaseline />
+      <CssBaseline /> 
       <AuthProvider>
         <BrowserRouter>
           <Navigation />
           <ProtectedRoute>
             <Routes>
               <Route path="/products" element={<Products />} />
+              <Route path="/products/:id" element={<ProductDetails />} />
               <Route path="/users" element={<Users />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />

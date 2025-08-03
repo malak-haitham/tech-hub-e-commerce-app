@@ -11,10 +11,15 @@ import {
   Box,
   Chip,
   Pagination,
-  Stack
+  Stack,
+  useTheme
 } from '@mui/material';
 import { ShoppingCart } from '@mui/icons-material';
 import api from '../utils/axios';
+import { useNavigate } from 'react-router-dom';
+import { ViewList, ViewModule } from '@mui/icons-material';
+
+
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -23,6 +28,11 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(6);
+  const[gridView,setGridView]=useState(true);
+  const navigate = useNavigate();
+  const theme = useTheme();
+
+
 
   useEffect(() => {
     fetchProducts();
@@ -54,6 +64,8 @@ const Products = () => {
       }));
       setProducts(mockProducts);
       setFilteredProducts(mockProducts);
+      localStorage.setItem('products', JSON.stringify(mockProducts));
+
     } catch (error) {
       console.error('Error fetching products:', error);
     } finally {
@@ -94,24 +106,40 @@ const Products = () => {
   }
 
   return (
+    
+    
+
     <Container maxWidth="lg">
-      <Box sx={{ my: 4 }}>
+      <Box sx={{ my: 4}}>
         <Typography variant="h4" gutterBottom>
           Products ({filteredProducts.length} items)
         </Typography>
+
+        <Button
         
+        variant="outlined"
+        onClick={()=>setGridView(!gridView)}
+        startIcon={gridView ? <ViewList /> : <ViewModule />}
+        sx={{ mb: 2,
+          color: theme.palette.mode === 'dark' ? '#b0a6b0ff' : '#2e7d32',
+          borderColor: theme.palette.mode === 'dark' ? '#93589fff' : '#2e7d32',
+         }}
+        >
+           {gridView ? 'List View' : 'Grid View'}
+        </Button>
+
         <TextField
           fullWidth
           label="Search products..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           sx={{ mb: 3 }}
-        />
-
+       />
         <Grid container spacing={3}>
           {currentProducts.map((product) => (
+            gridView?(
             <Grid size={{ xs: 12, sm: 6, md: 4 }} key={product.id}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <CardMedia
                   component="img"
                   height="200"
@@ -125,7 +153,7 @@ const Products = () => {
                       : product.title
                     }
                   </Typography>
-                  
+              
                   <Chip 
                     label={product.category} 
                     size="small" 
@@ -142,7 +170,23 @@ const Products = () => {
                   <Typography variant="h6" color="primary" sx={{ mb: 2 }}>
                     ${product.price}
                   </Typography>
-                  
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={() => navigate(`/products/${product.id}`)}
+                    sx={{
+                      mb: 1,
+                      color: theme.palette.mode === 'dark' ? '#1d1c1eff' : '#ffffffff',
+                      borderColor: theme.palette.mode === 'dark' ? '#6d4d69ff' : '#88b47aff',
+                      '&:hover': {
+                        borderColor: theme.palette.mode === 'dark' ? '#bbbbbb' : '#333333',
+                        color: theme.palette.mode === 'dark' ? '#bbbbbb' : '#222222',
+                      }
+                    }}
+                  >
+                    View Details
+                  </Button>
+
                   <Button
                     variant="contained"
                     fullWidth
@@ -153,7 +197,78 @@ const Products = () => {
                   </Button>
                 </CardContent>
               </Card>
+              
             </Grid>
+            ):(
+            <Grid item xs={12}  key={product.id}> 
+            <Card sx={{ display: 'flex', gap: 2, p: 2, alignItems: 'flex-start' }}>
+
+              <CardMedia
+                  component="img"
+                  height="200"
+                  image={product.image}
+                  alt={product.title}
+                  sx={{
+                   width: 150,
+                   height: 250,
+                   objectFit: 'cover',
+                   borderRadius: 1,
+                  }}
+                />
+                <CardContent sx={{ p: 0, flex: 1 }}>
+                  <Typography variant="h6" gutterBottom>
+                    {product.title.length > 50 
+                      ? `${product.title.substring(0, 50)}...` 
+                      : product.title
+                    }
+                  </Typography>
+                  <Chip 
+                    label={product.category} 
+                    size="small" 
+                    sx={{ mb: 1 }} 
+                  />
+                  <Box sx={{ flex: 1 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    {product.description.length > 100 
+                      ? `${product.description.substring(0, 100)}...` 
+                      : product.description
+                    }
+                  </Typography>
+                  
+                  <Typography variant="h6" color="primary" sx={{ mb: 2 }}>
+                    ${product.price}
+                  </Typography>
+                   <Button
+                        
+                    variant="outlined"
+                    fullWidth
+                    onClick={() => navigate(`/products/${product.id}`)}
+                    sx={{
+                      mb: 1,
+                      color: theme.palette.mode === 'dark' ? '#1d1c1eff' : '#ffffffff',
+                      borderColor: theme.palette.mode === 'dark' ? '#6d4d69ff' : '#88b47aff',
+                      '&:hover': {
+                        borderColor: theme.palette.mode === 'dark' ? '#bbbbbb' : '#333333',
+                        color: theme.palette.mode === 'dark' ? '#bbbbbb' : '#222222',
+                      }
+                    }}
+                  >
+                    View Details
+                  </Button>
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    startIcon={<ShoppingCart />}
+                    onClick={() => addToCart(product)}
+                  >
+                    Add to Cart
+                  </Button>
+                  </Box>
+                
+                </CardContent>
+            </Card>
+            </Grid>
+            )
           ))}
         </Grid>
 

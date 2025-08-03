@@ -12,8 +12,8 @@ import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useState, useEffect } from 'react';
-import techHubLight from '../assets/techhub-light.png';
-import techHubDark from '../assets/techhub-dark.png';
+import AngelLogo from '../assets/angel-l.png';
+
 
 const Navigation = () => {
   const { user, logout } = useAuth();
@@ -44,7 +44,7 @@ const Navigation = () => {
       <Toolbar>
         <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
           <img 
-            src={darkMode ? techHubLight : techHubDark} 
+            src={AngelLogo} 
             alt="TechHub Logo" 
             style={{ 
               height: '40px', 
